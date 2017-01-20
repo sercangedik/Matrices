@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class CubeColoring : MonoBehaviour {
@@ -8,9 +9,16 @@ public class CubeColoring : MonoBehaviour {
 	private Matrix result = new Matrix (4, 1);
 	private Vector3 vector = new Vector3 (0, 0, 0);
 	private Vector3 move = new Vector3 (0, 0 ,0);
+	private Mesh mesh;
+	private Vector3[] vertices;
 
 	// Use this for initialization
 	void Start () {
+		mesh = GetComponent<MeshFilter> ().mesh;
+		vertices = mesh.vertices;
+		Color[] colors = new Color[vertices.Length];
+		Array.ForEach<Color> (colors, c => new Color (1, 1, 1, 1));
+		mesh.colors = colors;
 		objectMatrix [0, 0] = transform.position.x;
 		objectMatrix [1, 0] = transform.position.y;
 		objectMatrix [2, 0] = transform.position.z;
@@ -19,18 +27,11 @@ public class CubeColoring : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
-		//vector.x  = vector.x + Time.time / 2000;
-		vector.y  = vector.y + Time.time / 2000;
-		//vector.z  = vector.z + Time.time / 2000;
-		getMovingMatrix (vector);
-
-		result = NaiveMultiplication (processMatrix, objectMatrix);
-		move.x = (float)result [0, 0]; 
-		move.y = (float)result [1, 0];
-		move.z = (float)result [2, 0];
-
-		transform.position = move;
+		rotateX ();
+		//rotateY ();
+		//rotateZ ();
+		//moveCube ();
+		//scaleCube ();
 	}
 
 	void getMovingMatrix(Vector3 vector) {
@@ -161,5 +162,121 @@ public class CubeColoring : MonoBehaviour {
 			}
 		}
 		return resultMatrix;
+	}
+
+	void rotateX() {
+		float degree = Time.time / 200;
+
+		for(int i = 0; i < vertices.Length; ++i) {
+			objectMatrix [0, 0] = vertices [i].x;
+			objectMatrix [1, 0] = vertices [i].y;
+			objectMatrix [2, 0] = vertices [i].z;
+			objectMatrix [3, 0] = 1;
+
+			getRotatingMatrixForX (degree);
+			result = NaiveMultiplication (processMatrix, objectMatrix);
+
+			vertices [i].x = (float)result [0, 0];
+			vertices [i].y = (float)result [1, 0];
+			vertices [i].z = (float)result [2, 0];
+
+		}
+
+		mesh.vertices = vertices;
+		mesh.RecalculateBounds();
+	}
+
+	void rotateY() {
+		float degree = Time.time / 200;
+
+		for(int i = 0; i < vertices.Length; ++i) {
+			objectMatrix [0, 0] = vertices [i].x;
+			objectMatrix [1, 0] = vertices [i].y;
+			objectMatrix [2, 0] = vertices [i].z;
+			objectMatrix [3, 0] = 1;
+
+			getRotatingMatrixForY (degree);
+			result = NaiveMultiplication (processMatrix, objectMatrix);
+
+			vertices [i].x = (float)result [0, 0];
+			vertices [i].y = (float)result [1, 0];
+			vertices [i].z = (float)result [2, 0];
+
+		}
+
+		mesh.vertices = vertices;
+		mesh.RecalculateBounds();
+	}
+
+	void rotateZ() {
+		float degree = Time.time / 200;
+
+		for(int i = 0; i < vertices.Length; ++i) {
+			objectMatrix [0, 0] = vertices [i].x;
+			objectMatrix [1, 0] = vertices [i].y;
+			objectMatrix [2, 0] = vertices [i].z;
+			objectMatrix [3, 0] = 1;
+
+			getRotatingMatrixForZ (degree);
+			result = NaiveMultiplication (processMatrix, objectMatrix);
+
+			vertices [i].x = (float)result [0, 0];
+			vertices [i].y = (float)result [1, 0];
+			vertices [i].z = (float)result [2, 0];
+
+		}
+
+		mesh.vertices = vertices;
+		mesh.RecalculateBounds();
+	}
+
+	void moveCube(){ 
+		float degree = Time.time / 20000;
+
+		vector.x  = vector.x + degree;
+		vector.y  = vector.y + degree;
+		vector.z  = vector.z + degree;
+
+		for(int i = 0; i < vertices.Length; ++i) {
+			objectMatrix [0, 0] = vertices [i].x;
+			objectMatrix [1, 0] = vertices [i].y;
+			objectMatrix [2, 0] = vertices [i].z;
+			objectMatrix [3, 0] = 1;
+
+			getMovingMatrix (vector);
+			result = NaiveMultiplication (processMatrix, objectMatrix);
+
+			vertices [i].x = (float)result [0, 0];
+			vertices [i].y = (float)result [1, 0];
+			vertices [i].z = (float)result [2, 0];
+
+		}
+
+		mesh.vertices = vertices;
+		mesh.RecalculateBounds();
+	} 
+
+	void scaleCube() {
+		float degree = Time.time / 20000;
+
+		vector.x  = vector.x + degree;
+		vector.y  = vector.y + degree;
+		vector.z  = vector.z + degree;
+
+		for(int i = 0; i < vertices.Length; ++i) {
+			objectMatrix [0, 0] = vertices [i].x;
+			objectMatrix [1, 0] = vertices [i].y;
+			objectMatrix [2, 0] = vertices [i].z;
+			objectMatrix [3, 0] = 1;
+			getScalingMatrix (vector);
+			result = NaiveMultiplication (processMatrix, objectMatrix);
+
+			vertices [i].x = (float)result [0, 0];
+			vertices [i].y = (float)result [1, 0];
+			vertices [i].z = (float)result [2, 0];
+
+		}
+		mesh.vertices = vertices;
+		mesh.RecalculateBounds();
 	}
 }
