@@ -27,7 +27,7 @@ public class CubeColoring : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		rotateX ();
+		//rotateX ();
 		//rotateY ();
 		//rotateZ ();
 		//moveCube ();
@@ -231,11 +231,11 @@ public class CubeColoring : MonoBehaviour {
 	}
 
 	void moveCube(){ 
-		float degree = Time.time / 20000;
+		float degree = Time.time / 200;
 
-		vector.x  = vector.x + degree;
-		vector.y  = vector.y + degree;
-		vector.z  = vector.z + degree;
+		vector.x = 0;//degree;
+		vector.y  = 0;//degree;
+		vector.z  = 0;//degree;
 
 		for(int i = 0; i < vertices.Length; ++i) {
 			objectMatrix [0, 0] = vertices [i].x;
@@ -257,11 +257,11 @@ public class CubeColoring : MonoBehaviour {
 	} 
 
 	void scaleCube() {
-		float degree = Time.time / 20000;
+		float degree = Time.time / 200;
 
-		vector.x  = vector.x + degree;
-		vector.y  = vector.y + degree;
-		vector.z  = vector.z + degree;
+		vector.x  = 1 + degree;
+		vector.y = 1;// + degree;
+		vector.z  = 1;// + degree;
 
 		for(int i = 0; i < vertices.Length; ++i) {
 			objectMatrix [0, 0] = vertices [i].x;
